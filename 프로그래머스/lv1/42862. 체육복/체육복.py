@@ -17,7 +17,9 @@ def solution(n, lost, reserve):
                 if i-1 in real_reserve:
                     rent_count += 1
                     real_reserve.remove(i-1)
+                    real_lost.remove(i)
                 elif i+1 in real_reserve:
                     rent_count += 1
                     real_reserve.remove(i+1)
-        return n - (len(lost) - rent_count) + len(common)
+                    real_lost.remove(i)
+        return n - len(real_lost)
