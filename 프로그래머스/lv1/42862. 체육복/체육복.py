@@ -1,35 +1,23 @@
 def solution(n, lost, reserve):
     answer = 0
+    rent_count = 0
+    total = set(lost) | set(reserve) # [2, 3], [3, 4] = [2, 3, 4]
+    common = set(lost) & set(reserve) # [2, 3], [3, 4] = [3]
+    real_reserve = set(reserve) - set(lost)
+    real_lost = set(lost) - set(reserve) # [2]
+    check = total - common # [2, 4]
     
-    students = [1] * (n+1)
-    for i in lost:
-        students[i] = 0
-    for i in reserve:
-        if i in lost:
-            students[i] = 1
-        else:
-            students[i] = 2
-    # print(students)
-    
-    for idx, stu in enumerate(students):
-        if idx == 0:
-            continue
-        elif idx < n and students[idx] == 2:
-            if students[idx-1] == 0:
-                students[idx-1] += 1
-                students[idx] -= 1
-            elif students[idx+1] == 0:
-                students[idx+1] += 1
-                students[idx] -= 1
-        elif idx == n:
-            if students[idx] == 0 and students[idx-1] == 2:
-                studnets[idx] += 1
-                students[idx-1] -= 1
-            elif students[idx] == 2 and students[idx-1] == 0:
-                students[idx] -= 1
-                students[idx-1] += 1
-    # print(students)
-    # print(students.count(1))
-    # print(students.count(2))
-    answer = students.count(2) + students.count(1) - 1
-    return answer
+    if len(real_lost) == n:
+        return 0
+    elif len(real_lost) == 0:
+        return n
+    else:
+        for i in check:
+            if i in real_lost:
+                if i-1 in real_reserve:
+                    rent_count += 1
+                    real_reserve.remove(i-1)
+                elif i+1 in real_reserve:
+                    rent_count += 1
+                    real_reserve.remove(i+1)
+        return n - (len(lost) - rent_count) + len(common)
